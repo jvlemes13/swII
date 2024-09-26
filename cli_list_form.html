@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuários</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: aliceblue;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Usuários</h1>
+    <form id="usuarioForm">
+        <button type="submit">Consultar Usuários</button>
+    </form>
+    <div id="resultado">
+        <table id="usuarioTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <td>Nome</td>
+                    <th>Senha</th>
+                    <th>Telefone</th>
+                    <th>Imagem</th>
+                </tr>
+            </thead>
+            <tbody id="usuarioBody"></tbody>
+        </table>
+    </div>
+    <script>
+        document.getElementById('usuarioForm').addEventListener('submit', function (e) {
+             e.preventDefault();
+             fetch('/api/usuarios')
+                .then(response => response.json())
+                .then(data => {
+                    const usuarioTable = document.getElementById('usuarioTable');
+                    const usuarioBody = document.getElementById('usuarioBody');
+                    usuarioBody.innerHTML = ''; 
+
+                    data.forEach (usuario => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${usuario.id}</td>
+                        <td>${usuario.nome}</td>
+                        <td>${usuario.senha}</td>
+                        <td>${usuario.tel}</td>
+                        <td><img src="uploads/$(usuario.image)" style="max-width: 100px;
+                        max-heleht:100px;"></td>
+                    `;
+                        usuarioBody.appendChild(row);
+                    });
+
+                    usuarioTable.style.display = 'table';
+                })
+                .catch(error => console.error('Erro:', error));
+            });
+    </script>
+</body>
+</html>
